@@ -12,6 +12,13 @@
   (let1 (name value) expr* expr ...)
   (let ((name value)) expr* expr ...))
 (define-public
+  (write-lines lst)
+  (display (string-join lst "\n")))
+(define-public
+  (read-stdin)
+  "read stdin and split to list"
+  (split-lines (get-string-all (open-input-file "/dev/stdin"))))
+(define-public
   (split-lines lst)
   (string-split lst #\newline))
 (define-public
