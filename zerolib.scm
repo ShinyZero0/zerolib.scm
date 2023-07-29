@@ -1,15 +1,24 @@
 (define-module
-  (zerolib))
+  (zerolib)
+  #:export (let1))
+
 (use-modules
   (scheme base)
   (ice-9 popen)
   (ice-9 textual-ports))
-(define-public
-  (call-command cmd args)
-  (let-values ((
-                (stdin stdout pid)
-                (get-command-pipes cmd args)))
 
+(define-syntax-rule
+  (let1 (name value) expr* expr ...)
+  (let ((name value)) expr* expr ...))
+(define-public (split-lines lst)
+  (string-split lst #\newline))
+(define-public
+  (last lst)
+  (car (reverse lst)))
+(define-public
+  (call-command cmd . args)
+  (let-values (((stdin stdout pid)
+                (get-command-pipes cmd args)))
     (waitpid pid)
     (close-port (cdr stdout))
     (string-trim-both
@@ -18,11 +27,10 @@
 
 (define-public
   (call-command-with-input cmd args input)
-  (let-values ((
-                (stdin stdout pid)
+  (let-values (((stdin stdout pid)
                 (get-command-pipes cmd args)))
 
-    (display input (cdr stdin))
+    (display (string-join input "\n") (cdr stdin))
     (close-port (cdr stdin))
     (waitpid pid)
     (close-port (cdr stdout))
@@ -32,8 +40,7 @@
 
 (define-public
   (get-command-pipes cmd args)
-  (let* (
-         (stdout
+  (let* ((stdout
            (pipe))
          (stdin
            (pipe))
