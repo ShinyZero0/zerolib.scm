@@ -9,11 +9,27 @@
   (ice-9 textual-ports))
 
 (define-syntax-rule
-  (let1 (name value) expr* expr ...)
-  (let ((name value)) expr* expr ...))
+  (let1 (name value) expr expr* ...)
+  (let ((name value)) expr expr* ...))
+
+(define-syntax write-line
+  (syntax-rules ()
+    (
+     (_ text)
+     (begin
+       (display text)
+       (newline)))
+     ((_ text port)
+     (begin
+       (display text port)
+       (newline))
+     )
+    )
+  )
 (define-public
   (write-lines lst)
-  (display (string-join lst "\n")))
+  (display (string-join lst "\n"))
+  (newline))
 (define-public
   (read-stdin)
   "read stdin and split to list"
