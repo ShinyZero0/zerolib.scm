@@ -1,6 +1,6 @@
 (define-module
   (zerolib)
-  #:export (let1))
+  #:export (let1 write-line write-all-lines))
 
 (use-modules
   (scheme base)
@@ -12,34 +12,29 @@
   (let1 (name value) expr expr* ...)
   (let ((name value)) expr expr* ...))
 
-(define-syntax write-line
-  (syntax-rules ()
-    (
-     (_ text)
-     (begin
-       (display text)
-       (newline)))
-     ((_ text port)
-     (begin
-       (display text port)
-       (newline))
-     )
-    )
-  )
-(define-public
-  (write-lines lst)
-  (display (string-join lst "\n"))
-  (newline))
+(define*
+  (write-line text #:optional (port (current-output-port)))
+  (display text port)
+  (newline port))
+
+(define*
+  (write-all-lines lst #:optional (port (current-output-port)))
+  (display (string-join lst "\n") port)
+  (newline port))
+
 (define-public
   (read-stdin)
   "read stdin and split to list"
   (split-lines (get-string-all (open-input-file "/dev/stdin"))))
+
 (define-public
   (split-lines lst)
   (string-split lst #\newline))
+
 (define-public
   (last lst)
   (car (reverse lst)))
+
 (define-public
   (call-command cmd . args)
   "Execute a program arg0 with args arg1-"
@@ -51,6 +46,11 @@
     (string-trim-both
       (get-string-all (car stdout))
       (char-set-adjoin char-set:whitespace #\newline))))
+
+(define-public
+  (read-all-text filepath)
+  (get-string-all
+    (open-file filepath "r")))
 
 (define-public
   (call-command-with-input cmd args input)
@@ -69,7 +69,7 @@
 
 (define-public
   (get-command-pipes cmd args)
-  "spawn a process cmd with args and return stdin and stdout pipts and pid"
+  "spawn a process cmd with args and return stdin and stdout pipes and pid"
   (let* ((stdout
            (pipe))
          (stdin
