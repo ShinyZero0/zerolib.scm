@@ -1,6 +1,10 @@
 (define-module
   (zerolib)
-  #:export (let1 write-line write-all-lines))
+  #:export (
+            let1
+            write-line
+            write-all-lines
+            read-all-lines))
 
 (use-modules
   (scheme base)
@@ -36,4 +40,4 @@
 (define-public
   (string-product start ends)
   (map (cut string-append start <>) ends))
-  
+
