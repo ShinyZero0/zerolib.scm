@@ -21,8 +21,10 @@
 
 (define*
   (write-all-lines lst #:optional (port (current-output-port)))
-  (display (string-join lst "\n") port)
-  (newline port))
+  (for-each
+    (lambda (line)
+      (write-line line port))
+    lst))
 
 (define*
   (read-all-lines #:optional (port (current-input-port)))
