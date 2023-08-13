@@ -8,8 +8,7 @@
 
 (use-modules
   (scheme base)
-  (srfi srfi-26)
-  (ice-9 textual-ports))
+  (srfi srfi-26))
 
 (define-syntax-rule
   (let1 (name value) expr expr* ...)
@@ -27,8 +26,11 @@
 
 (define*
   (read-all-lines #:optional (port (current-input-port)))
-  "read input port and split to list"
-  (split-lines (get-string-all port)))
+  "read input port to list of strings"
+  (let1 (line (read-line port))
+        (if (eof-object?  line)
+          '()
+          (cons line (read-all-lines port)))))
 
 (define-public
   (split-lines lst)
