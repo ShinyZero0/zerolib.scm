@@ -41,7 +41,3 @@
 (define-public
   (last lst)
   (car (reverse lst)))
-(define-public
-  (string-product start ends)
-  (map (cut string-append start <>) ends))
-
