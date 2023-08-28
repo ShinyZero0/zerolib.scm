@@ -35,9 +35,14 @@
           (cons line (read-all-lines port)))))
 
 (define-public
+  (swap func)
+  (lambda (foo bar) (func bar foo)))
+
+(define-public
   (split-lines lst)
   (string-split lst #\newline))
 
 (define-public
   (last lst)
   (car (reverse lst)))
+(define-public s+ string-append)
