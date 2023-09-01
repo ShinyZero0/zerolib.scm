@@ -29,10 +29,11 @@
 (define*
   (read-all-lines #:optional (port (current-input-port)))
   "read input port to list of strings"
-  (let1 (line (read-line port))
-        (if (eof-object?  line)
-          '()
-          (cons line (read-all-lines port)))))
+  (let loop ((result '()))
+    (let1 (line (read-line port))
+          (if (eof-object?  line)
+            (reverse result)
+            (loop (cons line result))))))
 
 (define-public
   (swap func)
